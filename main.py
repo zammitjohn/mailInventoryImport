@@ -1,14 +1,10 @@
 from O365 import Account, Connection
 import email
 import imaplib
-import os
 import getpass
 import time
 from datetime import datetime
-import requests
-import json
-import base64
-requests.packages.urllib3.disable_warnings() # suppress SSL certificate warnings when ssl_verify=False
+import webims
 
 def microsoftOutlook():
     print("\n")
@@ -33,11 +29,7 @@ def microsoftOutlook():
                     for att in message.attachments:
                         if '.csv' in att.name:
                             print(now.strftime("%d/%m/%Y %H:%M:%S") + ": " + 'Downloading "{fileName}" from email titled "{subject}" received on the "{dateReceived}".'.format(fileName=att.name, subject=message.subject, dateReceived=message.received))
-                            request_cookie = {'UserSession': (api_Cookie.decode('utf-8'))}
-                            request_file = {'file': (base64.b64decode(att.content))}
-                            request_value = {'category': api_inventoryCategoryId}
-                            response = requests.post(api_endpoint, cookies=request_cookie, files=request_file, data=request_value, verify=False)
-                            print (now.strftime("%d/%m/%Y %H:%M:%S") + ": Data Imported " + str(response.content.decode('utf-8')))  
+                            webims.inventory_mail_import(api_endpoint, api_inventoryCategoryId, api_sessionId, att.content)
                     message.mark_as_read()
             Connection.refresh_token                
             time.sleep(sync_frequency)
@@ -73,13 +65,7 @@ def imapServer():
                     subject = str(email_message).split("Subject: ", 1)[1].split("\n", 1)[0]
                     dateReceived = str(email_message).split("Date: ", 1)[1].split("\n", 1)[0]
                     print(now.strftime("%d/%m/%Y %H:%M:%S") + ": " + 'Downloaded "{file}" from email titled "{subject}" received on the "{dateReceived}".'.format(file=fileName, subject=subject, dateReceived=dateReceived))
-    
-                    request_cookie = {'UserSession': (api_Cookie.decode('utf-8'))}
-                    request_file = {'file': part.get_payload(decode=True)}
-                    request_value = {'category': api_inventoryCategoryId}
-
-                    response = requests.post(api_endpoint, cookies=request_cookie, files=request_file, data=request_value, verify=False)
-                    print (now.strftime("%d/%m/%Y %H:%M:%S") + ": Data Imported " + str(response.content.decode('utf-8')))
+                    webims.inventory_mail_import(api_endpoint, api_inventoryCategoryId, api_sessionId, part.get_payload(decode=False))
         mail.logout()
         time.sleep(sync_frequency)
 
@@ -94,13 +80,9 @@ sync_subjectCriteria  = input("Subject Criteria: ")
 print("\n")
 print("API Settings")
 print('_' * 10)
-api_endpoint = input("API Host: ") + '/api/inventory/import.php'
-api_sessionKey = getpass.getpass(prompt='API Session Key: ')
+api_endpoint = input("API Host: ") + '/api/inventory/mail_import'
+api_sessionId = getpass.getpass(prompt='API Session Key: ')
 api_inventoryCategoryId = int(input("Inventory Category ID: "))
-## Creation of cookie for WebIMS auth
-api_Cookie_json = []
-api_Cookie_json.append({"SessionId":api_sessionKey})
-api_Cookie = base64.b64encode(str(json.dumps(api_Cookie_json[0])).encode('ascii'))
 
 print("\n")
 print("Mailbox Type")
