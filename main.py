@@ -80,7 +80,7 @@ sync_subjectCriteria  = input("Subject Criteria: ")
 print("\n")
 print("API Settings")
 print('_' * 10)
-api_endpoint = input("API Host: ") + '/api/inventory/mail_import'
+api_endpoint = input("API Host: ")
 api_sessionId = getpass.getpass(prompt='API Session Key: ')
 api_inventoryCategoryId = int(input("Inventory Category ID: "))
 webims = WebIMS(api_endpoint, api_sessionId)
