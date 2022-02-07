@@ -8,12 +8,12 @@ class WebIMS:
         self.endpoint = endpoint
         self.sessionId = sessionId
 
-    def inventory_mail_import(self, categoryId, file):
+    def inventory_mail_import(self, warehouseId, file):
         now = datetime.now()
         
         post_body_json = json.loads('{}')
         post_body_json.update({"file":file})
-        post_body_json.update({"category":categoryId})
+        post_body_json.update({"warehouseId":warehouseId})
         post_body_json.update({"isBase64EncodedContent":"1"})
         
         response = requests.post(self.endpoint + '/api/inventory/mail_import.php', json=post_body_json, headers={'Auth-Key': self.sessionId}, verify=False)

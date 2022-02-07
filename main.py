@@ -29,7 +29,7 @@ def microsoftOutlook():
                     for att in message.attachments:
                         if '.csv' in att.name:
                             print(now.strftime("%d/%m/%Y %H:%M:%S") + ": " + 'Downloading "{fileName}" from email titled "{subject}" received on the "{dateReceived}".'.format(fileName=att.name, subject=message.subject, dateReceived=message.received))
-                            webims.inventory_mail_import(api_inventoryCategoryId, att.content)
+                            webims.inventory_mail_import(api_warehouseId, att.content)
                     message.mark_as_read()
             Connection.refresh_token                
             time.sleep(sync_frequency)
@@ -65,7 +65,7 @@ def imapServer():
                     subject = str(email_message).split("Subject: ", 1)[1].split("\n", 1)[0]
                     dateReceived = str(email_message).split("Date: ", 1)[1].split("\n", 1)[0]
                     print(now.strftime("%d/%m/%Y %H:%M:%S") + ": " + 'Downloaded "{file}" from email titled "{subject}" received on the "{dateReceived}".'.format(file=fileName, subject=subject, dateReceived=dateReceived))
-                    webims.inventory_mail_import(api_inventoryCategoryId, part.get_payload(decode=False))
+                    webims.inventory_mail_import(api_warehouseId, part.get_payload(decode=False))
         mail.logout()
         time.sleep(sync_frequency)
 
@@ -82,7 +82,7 @@ print("API Settings")
 print('_' * 10)
 api_endpoint = input("API Host: ")
 api_sessionId = getpass.getpass(prompt='API Session Key: ')
-api_inventoryCategoryId = int(input("Inventory Category ID: "))
+api_warehouseId = int(input("Warehouse ID: "))
 webims = WebIMS(api_endpoint, api_sessionId)
 
 print("\n")
