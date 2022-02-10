@@ -29,7 +29,7 @@ def microsoftOutlook():
                     for att in message.attachments:
                         if '.csv' in att.name:
                             print(now.strftime("%d/%m/%Y %H:%M:%S") + ": " + 'Downloading "{fileName}" from email titled "{subject}" received on the "{dateReceived}".'.format(fileName=att.name, subject=message.subject, dateReceived=message.received))
-                            webims.inventory_mail_import(api_warehouseId, att.content)
+                            webims.inventory_import(api_warehouseId, att.content)
                     message.mark_as_read()
             Connection.refresh_token                
             time.sleep(sync_frequency)
@@ -65,7 +65,7 @@ def imapServer():
                     subject = str(email_message).split("Subject: ", 1)[1].split("\n", 1)[0]
                     dateReceived = str(email_message).split("Date: ", 1)[1].split("\n", 1)[0]
                     print(now.strftime("%d/%m/%Y %H:%M:%S") + ": " + 'Downloaded "{file}" from email titled "{subject}" received on the "{dateReceived}".'.format(file=fileName, subject=subject, dateReceived=dateReceived))
-                    webims.inventory_mail_import(api_warehouseId, part.get_payload(decode=False))
+                    webims.inventory_import(api_warehouseId, part.get_payload(decode=False))
         mail.logout()
         time.sleep(sync_frequency)
 

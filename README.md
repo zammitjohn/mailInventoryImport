@@ -1,5 +1,5 @@
 # webims-mail-import
-This simple python tool downloads .csv inventory stocktakes from a Mail server and imports to [webims-backend-api](https://github.com/zammitjohn/webims-backend-api). It exploits Inventory ```mail_import``` API to import inventory data. This tool must be executed per warehouse import job.
+This simple python tool downloads .csv inventory stocktakes from a Mail server and imports to [webims-backend-api](https://github.com/zammitjohn/webims-backend-api). It exploits Inventory ```import``` API to import inventory data. This tool must be executed per warehouse import job.
 
 ## Instructions
 1. Install all required libraries and launch [main.py](main.py)
